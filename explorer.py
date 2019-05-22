@@ -13,29 +13,32 @@ import pandas as pd
 # n, bins, patches = plt.hist(x, 50, density=True, facecolor='g', alpha=0.75)
 
 ####
+#kpix = pd.read_csv("dumpkpix_trigger.csv")
+kpix = pd.read_csv("Run_20190505_111442.csv")
+#print(kpix.head())
+#print(kpix.info())
+trigs = len(kpix.index)
+print (' Kpix recorded %i Triggers' % trigs)
+#kpix = kpix.iloc[0:100]
+tskpix = np.array(kpix['TrigTimestamp_ns'])
+
+
 tlu = pd.read_csv("run255_trigger.csv")
-print(tlu.head())
-tlu = tlu.iloc[0:100]
-print(tlu['timestamp_low'])
+#print(tlu.head())
+tlu = tlu.iloc[0:trigs]
 tstlu = np.array(tlu['timestamp_low'])
-print (tstlu)
+#print (tstlu)
 #tlu['timestamp_low'].plot(kind='hist', bins=10)
 #plt.xlabel('timestamp [ns]')
 #plt.show()
 
-#kpix = pd.read_csv("dumpkpix_trigger.csv")
-kpix = pd.read_csv("Run_20190505_111442.csv")
-kpix = kpix.iloc[0:100]
-print(kpix.head())
-print(kpix.info())
-tskpix = np.array(kpix['TrigTimestamp_ns'])
 
 diffs = tskpix - tstlu
 print(diffs)
 xmin = np.amin(diffs)-10
 xmax = np.amax(diffs)+10
 if (xmax-xmin)%5!=0:
-    print("ERROR: check your data!")
+    print("ERROR: check your data! nbins = ", (xmax-xmin)/5)
     exit()
 nbins = int((xmax-xmin)/5)
 print("nbins = ", nbins, "; xmin, xmax = ", xmin, xmax)
