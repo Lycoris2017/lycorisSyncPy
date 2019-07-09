@@ -11,11 +11,12 @@ from collections import defaultdict #non-sorted
 
 acc_delay = [105.0, 130.0]
 ####
-cluster = pd.read_csv("claus_file.csv")
+#cluster = pd.read_csv("claus_file.csv")
+cluster = pd.read_csv("claus_file_new.csv")
 
 #cluster =cluster.iloc[:100]
 
-#print(cluster.head())
+print(cluster.head(3))
 
 x=np.genfromtxt('run255_trigN_mask.csv', dtype= int , names=('trigN'), delimiter = '\n', usecols = (0), unpack=True )
 #print (x)
@@ -33,26 +34,34 @@ res = pd.merge(cluster, df, on = 'trigN')
 res = res.drop(columns=['Event Number', 'time'])
 
 res['x-pos'] = 0.0
-#res.columns = ['Sensor', 'x-pos', 'position', 'z-pos', 'trigN']
 res.rename( columns = {'position': 'y-pos'}, inplace = True)
 cols = res.columns.tolist()
 cols = cols[:1]+ cols[2:]+ cols[1:2]
 res = res[cols]
 res['z-pos'] = 0.0
 
+cols = res.columns.tolist()
+cols = cols[:1] + cols[-3:] + cols[1:-3]
+res=res[cols]
 print (res.columns.tolist())
 print(res.head(2))
 
 #-- quality check: how many hit clusters for each trigger?
 freq = pd.DataFrame( {'count': res.groupby( ['trigN'] ).size()} ).reset_index()
-print (freq['count'].unique())
+print ("- range of hit clusters for each trigger?\n", freq['count'].unique())
 
 #print (type(res.trigN))
+#print(res.info(verbose=True))
+
 
 print (res.trigN.unique()) # return an array
 for i in (res.trigN.unique()):
     if i<10:
         print (res[res.trigN==i].loc[:, res.columns != 'trigN'])
-    with open('res.csv', 'a') as f:
-        res[res.trigN==i].loc[:, res.columns != 'trigN'].to_csv(f,header = False, index=False) # add hit lines
-        f.write('255,%d,0.0\n'%(i)) # add header line
+    with open('res.dat', 'a') as f:
+        f.write( res[res.trigN==i].loc[:, res.columns != 'trigN'].to_string( header = False, index=False) )
+        f.write('\n255 %d 0.0\n'%(i)) # add header line
+
+    #with open('res.csv', 'a') as f:
+        #res[res.trigN==i].loc[:, res.columns != 'trigN'].to_csv(f, header = False, index=False) # add hit lines
+        #f.write('\n255,%d,0.0\n'%(i)) # add header line
