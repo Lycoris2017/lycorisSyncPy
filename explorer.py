@@ -51,11 +51,13 @@ tstlu = np.array(tlu[tlu_name])
 diffs = tskpix - tstlu
 
 print( "time diff < 0: \n",np.where(diffs<0))  # get index
+print( tskpix[25229: 25250] )
 #print (tskpix[2648:2655])
 #print (tstlu[2648:2655])
 #print (diffs[5407:5409])
 #print (diffs[8032:8033])
-print("time diff !=135/110 \n", np.where((diffs!=135) | (diffs!=110)) )
+##-- TBD: the 'or' in where statement does not work like this:
+#print("time diff !=135/110 \n", np.where((diffs!=135) | (diffs!=110)) ) 
 
 
 # NEW! produce a trigN mask file by comparing KPiX to TLU timestamp:
