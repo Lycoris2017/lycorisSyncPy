@@ -44,13 +44,15 @@ Format of OUTPUT.dat file:
 
 Explanation for each variables:
 
-+ Layer: 10-15 lycoris sensor layer (corresponding to kpix analysis sensor 0-5)  
-+ x-pos: always 0.0  
-+ y-pos: in [um], center of gravity of a cluster (charge weighted center)  
-+ z-pos: always 0.0  
-+ Significance2: sum_of_signal/sum_of_noise  
-+ Size: number of strips inside a cluster  
-+ Charge: cluster charge  
-+ runtime_ns: related exteran trigger timestamp using TLU common clk with a 64bit runtime counter.  
-+ trigN: trigger ID as TLU trigger ID  
-+ runnumber: eudaq2 runnumber  
+| Var    | Comment  |
+|-------:|:---------|
+| Layer | 10-15 lycoris sensor layer (corresponding to kpix analysis sensor 0-5)   |
+| x-pos | always 0.0  |
+| y-pos | in [um], center of gravity of a cluster (charge weighted center)  |
+| z-pos | always 0.0  |
+| Significance2 | sum_of_signal/sum_of_noise  |
+| Size | number of strips inside a cluster  |
+| Charge | cluster charge  |
+| runtime_ns | related exteran trigger timestamp using TLU common clk with a 64bit runtime counter.  |
+| trigN | trigger ID as TLU trigger ID  |
+| runnumber | eudaq2 runnumber  |
