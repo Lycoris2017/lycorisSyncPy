@@ -9,6 +9,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import click
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -18,16 +19,16 @@ parser.add_argument("-k", "--kpix", default = "test_cluster.csv",
                     help="kpix cluster file with trigger timestamps .csv")
 args = parser.parse_args()
 print(f" tlu file: {args.tlu}, kpix file: {args.kpix}")
-kpix = pd.read_csv(args.kpix)
-tlu = pd.read_csv(args.tlu)
+_kpix = pd.read_csv(args.kpix)
+_tlu = pd.read_csv(args.tlu)
 
 ## lighter your dataframes
 kmask=["Event Number","runtime_ns"]
 tmask=["trigger","timestamp_low"]
 tts="timestamp_low"
 kts="runtime_ns"
-kpix=kpix[kmask]
-tlu =tlu[tmask]
+kpix = _kpix[kmask].copy()
+tlu  = _tlu[tmask].copy()
 
 kpix=kpix.drop_duplicates()
 
@@ -71,22 +72,29 @@ The following conditions are taken into account:
 1) missing value of TLU or KPiX side
 2) glitches of KPiX TIMESTAMP: some ts suddenly becomes very small
 """
-for kpixi in kpix[kts]:
-    print(kpixi)
-    while True:
-        if itt>=tt-1:
-            break;
-        tlui = tlu.iloc[itt][tts]
-        diff = kpixi-tlui
-        if diff<0:
-            break
-        if diff>0:
-            if diff< limit:
-                #print (kpixi, tlui, diff)
-                diffs.append(diff)
+with click.progressbar(iterable = range(kk),
+                       show_pos=True,
+                       label=click.style("Processing", fg="green") )as bar:
+    barcount=0
+    for kpixi in kpix[kts]:
+        #print(kpixi)
+        while True:
+            if itt>=tt-1:
+                break;
+            tlui = tlu.iloc[itt][tts]
+            diff = kpixi-tlui
+            if diff<0:
                 break
-            else:
-                itt+=1
+            if diff>0:
+                if diff< limit:
+                    #print (kpixi, tlui, diff)
+                    diffs.append(diff)
+                    break
+                else:
+                    itt+=1
+        #end of while
+        bar.update(1)
+
 # Plot
 diffs = np.array(diffs)
 xmin = np.amin(diffs)-10
@@ -98,8 +106,30 @@ plt.xlabel('Timestamp [ns]')
 plt.ylabel('Ab.')
 plt.title('Histogram')
 #plt.grid(True)
-plt.show()
+#plt.show()
 
 """
 2) do a match
 """
+#print (kpix)
+#print (tlu)
+# should apply to original _kpix and _tlu
+print (np.unique(diffs))
+print (_tlu.head(3))
+ts_names=[]
+for i in np.unique(diffs):
+    name="ts+"+str(i)
+    ts_names.append(name)
+    
+    _tlu[name] = _tlu[tts].apply(lambda x: x+i)
+print (_tlu.head(3))
+
+res_list=[]
+for name in ts_names:
+    res_i = pd.merge(_kpix, _tlu,
+                     left_on=kts,
+                     right_on=name)
+    res_list.append(res_i)
+# end of for loop 
+res = pd.concat(res_list)
+print("How many matched triggers?",res['Event Number'].unique().size)
