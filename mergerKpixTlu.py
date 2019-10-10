@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # Mengqing @ 2019-May-31
 # temperary python code to provide sync data of TLU + kpix
 # final data strategy:1) refactory the code to c++ with analysis framework; 2) online merging on EUDAQ2
@@ -9,8 +11,6 @@ import pandas as pd
 import argparse
 
 from collections import defaultdict #non-sorted
-acc_delay = [105.0, 130.0]
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("run", help="run number you have to give")
