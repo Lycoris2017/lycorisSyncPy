@@ -2,6 +2,9 @@
 Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 
 ## ChangeLog
++ 2019-Oct-10
+-- Add a new file to use input of Lycoris-analysis cluster list in csv and TLUMimosa Timestamps in csv.
+
 + 2019-Oct-8
 -- Refactorize the code + adding plots from mergerKpixTlu.py
 
@@ -9,6 +12,10 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 -- adding the new merger to print out a allhits.csv file according to Claus' GBL file reader.
 
 ## Manual
++ mergerKpixMimosa.py
+
+  * input: timestamp csv of TLU+Mimosa; cluster list in csv from kpix-analysis
+  * output: (tbd) input.dat for pyGBL
 
 + explorer.py
 

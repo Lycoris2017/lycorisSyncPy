@@ -21,6 +21,10 @@ args = parser.parse_args()
 print(f" tlu file: {args.tlu}, kpix file: {args.kpix}")
 _kpix = pd.read_csv(args.kpix)
 _tlu = pd.read_csv(args.tlu)
+if _tlu['run'].unique().size > 1:
+    exit("Your TLU input file is not valid for: [too many run numbers].")
+else :
+    runnumer = _tlu[0]['run']
 
 ## lighter your dataframes
 kmask=["Event Number","runtime_ns"]
@@ -133,3 +137,15 @@ for name in ts_names:
 # end of for loop 
 res = pd.concat(res_list)
 print("How many matched triggers?",res['Event Number'].unique().size)
+
+
+## write into a PyGBL input.dat file:
+
+# f = open(f'res_{runnumer}.dat', 'w')
+
+# for i in (res['trigger'].unique()):
+#     if i<10:
+#         print (res[res.trigN==i].loc[:, res.columns != 'trigN'])
+#     #with open('res.dat', 'a') as f:
+#     f.write( res[res.trigN==i].loc[:, res.columns != 'trigN'].to_string( header = False, index=False) )
+#     f.write('\n%s %d 0.0\n'%(args.run,i)) # add header line
