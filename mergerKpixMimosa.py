@@ -14,9 +14,9 @@ import click
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--tlu", default = "test_tlu.csv",
+parser.add_argument("-t", "--tlu", default = "data/test_tlu.csv",
                     help="tlu timestamps file .csv")
-parser.add_argument("-k", "--kpix", default = "test_cluster.csv",
+parser.add_argument("-k", "--kpix", default = "data/test_cluster.csv",
                     help="kpix cluster file with trigger timestamps .csv")
 parser.add_argument("-b", "--bfield", default = 0.0,
                     help="B-field if there is any applicable, [default = 0.0]")

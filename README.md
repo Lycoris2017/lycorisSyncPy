@@ -15,7 +15,7 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 + mergerKpixMimosa.py
 
   * input: timestamp csv of TLU+Mimosa; cluster list in csv from kpix-analysis
-  * output: (tbd) input.dat for pyGBL
+  * output: res_[runnumber].dat for input to pyGBL code.
 
 + explorer.py
 
@@ -33,7 +33,7 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
     Cut applied is significance>7 && Charge<10[fC]
 
 
-Format of OUTPUT.dat file:
+## Format of output file `res_[runnumber].dat`
 
 ```
 #Layer, x-pos, y-pos, z-pos, Significance2, Size, Charge, runtime_ns
