@@ -14,7 +14,7 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 ## Manual
 + mergerKpixMimosa.py
 
-  * input: timestamp csv of TLU+Mimosa; cluster list in csv from kpix-analysis
+  * input: timestamp csv of TLU+Mimosa; cluster list in csv from kpix-analysis; B-field is set to 0.0 by default, can be changed as argument.
   * output: res_[runnumber].dat for input to pyGBL code.
 
 + explorer.py
@@ -43,7 +43,7 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 14  0.0  39350.0  0.0   3.21886  1   3.440240  1023528160
 14  0.0  30300.0  0.0   3.16870  1   1.134590  1023528160
 ......
-# runnumber, trigN, 0.0
+# runnumber, trigger, B-field
 400 179 0.0 
 ```
 
