@@ -2,6 +2,9 @@
 Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 
 ## ChangeLog
++ 2019-Oct-10
+-- Add a new file to use input of Lycoris-analysis cluster list in csv and TLUMimosa Timestamps in csv.
+
 + 2019-Oct-8
 -- Refactorize the code + adding plots from mergerKpixTlu.py
 
@@ -9,6 +12,10 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
 -- adding the new merger to print out a allhits.csv file according to Claus' GBL file reader.
 
 ## Manual
++ mergerKpixMimosa.py
+
+  * input: timestamp csv of TLU+Mimosa; cluster list in csv from kpix-analysis; B-field is set to 0.0 by default, can be changed as argument.
+  * output: res_[runnumber].dat for input to pyGBL code.
 
 + explorer.py
 
@@ -26,7 +33,7 @@ Python based code to study lycoris syncing with mimosa via AIDA2020-TLU
     Cut applied is significance>7 && Charge<10[fC]
 
 
-Format of OUTPUT.dat file:
+## Format of output file `res_[runnumber].dat`
 
 ```
 #Layer, x-pos, y-pos, z-pos, Significance2, Size, Charge, runtime_ns
@@ -36,7 +43,7 @@ Format of OUTPUT.dat file:
 14  0.0  39350.0  0.0   3.21886  1   3.440240  1023528160
 14  0.0  30300.0  0.0   3.16870  1   1.134590  1023528160
 ......
-# runnumber, trigN, 0.0
+# runnumber, trigger, B-field
 400 179 0.0 
 ```
 

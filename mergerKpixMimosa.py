@@ -9,18 +9,31 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import click
 
+import click
 import argparse
+
 parser = argparse.ArgumentParser()
-parser.add_argument("-t", "--tlu", default = "test_tlu.csv",
+parser.add_argument("-t", "--tlu", default = "data/test_tlu.csv",
                     help="tlu timestamps file .csv")
-parser.add_argument("-k", "--kpix", default = "test_cluster.csv",
+parser.add_argument("-k", "--kpix", default = "data/test_cluster.csv",
                     help="kpix cluster file with trigger timestamps .csv")
+parser.add_argument("-b", "--bfield", default = 0.0,
+                    help="B-field if there is any applicable, [default = 0.0]")
+
 args = parser.parse_args()
-print(f" tlu file: {args.tlu}, kpix file: {args.kpix}")
+print(f" Open files: {args.tlu} for tlu, {args.kpix} for Kpix.")
+print(f" B field is set to: {args.bfield}")
+
 _kpix = pd.read_csv(args.kpix)
 _tlu = pd.read_csv(args.tlu)
+
+if _tlu['run'].unique().size > 1:
+    exit("Your TLU input file is not valid for: [too many run numbers].")
+else :
+    runnumber = _tlu.iloc[0]['run']
+
+
 
 ## lighter your dataframes
 kmask=["Event Number","runtime_ns"]
@@ -46,7 +59,7 @@ tlu0 =  tlu.iloc[0][tts]
 
 diff = kpix0 - tlu0
 ikk = 0
-print(diff)
+
 ## If Kpix starts earlier than TLU+mimosa:
 while True:
     kpixi=kpix.iloc[ikk][kts]
@@ -57,7 +70,7 @@ while True:
         ikk+=1
 
 kpix = kpix.iloc[ikk:]
-print(kpix)
+#print(kpix)
 """
 1) do a loop to get time delay, outer loop over kpix, inner is tlu
 """
@@ -114,15 +127,22 @@ plt.title('Histogram')
 #print (kpix)
 #print (tlu)
 # should apply to original _kpix and _tlu
-print (np.unique(diffs))
-print (_tlu.head(3))
+print (" Delta_T =", np.unique(diffs))
+
+maskt = ["event","trigger","ni_trigger_number",tts]
+_tlu = _tlu[maskt]
+
+print(_kpix.columns)
+maskk = ["Significance","trigN","runtime"]
+_kpix = _kpix.drop(maskk, axis=1)
+
 ts_names=[]
 for i in np.unique(diffs):
     name="ts+"+str(i)
     ts_names.append(name)
     
     _tlu[name] = _tlu[tts].apply(lambda x: x+i)
-print (_tlu.head(3))
+#print (_tlu.head(3))
 
 res_list=[]
 for name in ts_names:
@@ -132,4 +152,35 @@ for name in ts_names:
     res_list.append(res_i)
 # end of for loop 
 res = pd.concat(res_list)
-print("How many matched triggers?",res['Event Number'].unique().size)
+print(" How many matched triggers?",res['Event Number'].unique().size)
+
+
+
+"""
+ * Write into a PyGBL input.dat file: *
+
+ Layer, x, y, z, Significance2, Size, Charge, runtime_ns
+ ...
+ Runnumber, TrigN, B-field
+ Layer, x, y, z, Significance2, Size, Charge, runtime_ns
+ ...
+
+"""
+# add x-pos, z-pos, drop un-necessary
+list2drop = ts_names + ["ni_trigger_number", "Event Number", "timestamp_low", "event"]
+
+res=res.drop(list2drop ,axis=1)
+res.rename( columns = {'position': 'y-pos'}, inplace = True)
+res.insert(1,'x-pos', 0.0)
+res.insert(3,'z-pos', 0.0)
+
+print(res.columns)
+print(res.head(3))
+f = open(f'res_{runnumber}.dat', 'w')
+
+for i in (res['trigger'].unique()):
+    if i<10:
+        print (res[res.trigger==i].loc[:, res.columns != 'trigger'])
+    #with open('res.dat', 'a') as f:
+    f.write( res[res.trigger==i].loc[:, res.columns != 'trigger'].to_string( header = False, index=False) )
+    f.write('\n%s %d %.1f\n'%(runnumber,i,args.bfield)) # add header line
